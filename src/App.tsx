@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout';
+import { ScrollToTopButton } from './components/ui/ScrollToTopButton';
 import { 
   HeroSection, 
   AboutSection, 
@@ -14,13 +15,16 @@ import { DashboardPage } from './components/dashboard';
 // Componente Home (Landing Page)
 function HomePage() {
   return (
-    <Layout>
-      <HeroSection />
-      <AboutSection />
-      <ServicesSection />
-      <GallerySection />
-      <BookingSection />
-    </Layout>
+    <>
+      <Layout>
+        <HeroSection />
+        <AboutSection />
+        <ServicesSection />
+        <GallerySection />
+        <BookingSection />
+      </Layout>
+      <ScrollToTopButton />
+    </>
   );
 }
 

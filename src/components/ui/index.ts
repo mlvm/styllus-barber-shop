@@ -9,3 +9,5 @@ export { SelectInput } from './SelectInput';
 export { Textarea } from './Textarea';
 export { PreferredDateTimeField } from './PreferredDateTimeField';
 export { PreferredDateTimeModal } from './PreferredDateTimeModal';
+export { ScrollToTopButton } from './ScrollToTopButton';
+
