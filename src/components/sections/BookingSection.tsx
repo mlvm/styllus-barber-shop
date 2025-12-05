@@ -7,13 +7,21 @@ import { TextInput } from '../ui/TextInput';
 import { SelectInput } from '../ui/SelectInput';
 import { Textarea } from '../ui/Textarea';
 import { PrimaryButton } from '../ui/PrimaryButton';
+import { PreferredDateTimeField } from '../ui/PreferredDateTimeField';
 import { services } from './ServicesSection';
+import type { PreferredDateTime, PreBooking } from '../../types/booking';
+import { formatPreferredDateTime, generatePreBookingId } from '../../types/booking';
 
+/**
+ * Interface do formulário de agendamento
+ * O campo preferredDateTime agora usa o tipo estruturado PreferredDateTime
+ * para facilitar a integração futura com o Dashboard
+ */
 interface FormData {
   nome: string;
   telefone: string;
   servico: string;
-  dataHorario: string;
+  preferredDateTime: PreferredDateTime;
   mensagem: string;
 }
 
@@ -27,7 +35,7 @@ export function BookingSection() {
     nome: '',
     telefone: '',
     servico: '',
-    dataHorario: '',
+    preferredDateTime: { date: null, time: null },
     mensagem: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -40,6 +48,14 @@ export function BookingSection() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Handler para atualização da data/horário preferencial
+   * Atualiza o estado do formulário com o novo valor selecionado no modal
+   */
+  const handlePreferredDateTimeChange = (dateTime: PreferredDateTime) => {
+    setFormData(prev => ({ ...prev, preferredDateTime: dateTime }));
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -47,8 +63,27 @@ export function BookingSection() {
     // Simula envio do formulário
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    console.log('Dados do agendamento:', formData);
-    alert(`Agendamento solicitado com sucesso!\n\nNome: ${formData.nome}\nTelefone: ${formData.telefone}\nServiço: ${services.find(s => s.id === formData.servico)?.name}\nData/Horário: ${formData.dataHorario}`);
+    /**
+     * Preparação do objeto PreBooking para integração futura com o Dashboard
+     * Este objeto contém todos os dados necessários para persistência no backend
+     * e exibição no painel administrativo
+     */
+    const preBooking: PreBooking = {
+      id: generatePreBookingId(),
+      clientName: formData.nome,
+      clientPhone: formData.telefone,
+      serviceId: formData.servico,
+      preferredDateTime: formData.preferredDateTime,
+      message: formData.mensagem || undefined,
+      createdAt: new Date(),
+      status: 'pending',
+    };
+
+    // Log do pré-agendamento para debug (será substituído por chamada ao backend)
+    console.log('Pré-agendamento criado:', preBooking);
+    
+    const formattedDateTime = formatPreferredDateTime(formData.preferredDateTime);
+    alert(`Agendamento solicitado com sucesso!\n\nNome: ${formData.nome}\nTelefone: ${formData.telefone}\nServiço: ${services.find(s => s.id === formData.servico)?.name}\nData/Horário: ${formattedDateTime}`);
     
     setIsSubmitted(true);
     setIsLoading(false);
@@ -60,7 +95,7 @@ export function BookingSection() {
         nome: '',
         telefone: '',
         servico: '',
-        dataHorario: '',
+        preferredDateTime: { date: null, time: null },
         mensagem: '',
       });
     }, 5000);
@@ -145,12 +180,10 @@ export function BookingSection() {
                     required
                   />
 
-                  <TextInput
+                  <PreferredDateTimeField
                     label="Data e Horário Preferencial"
-                    name="dataHorario"
-                    type="datetime-local"
-                    value={formData.dataHorario}
-                    onChange={handleChange}
+                    value={formData.preferredDateTime}
+                    onChange={handlePreferredDateTimeChange}
                     required
                   />
 

@@ -5,3 +5,6 @@ export { StatsGrid } from './StatsGrid';
 export { AppointmentsChart } from './AppointmentsChart';
 export { ServicesChart } from './ServicesChart';
 export { RecentAppointments } from './RecentAppointments';
+
+// Módulo de Agendamentos
+export * from './appointments';

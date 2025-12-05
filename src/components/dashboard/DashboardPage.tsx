@@ -6,6 +6,8 @@ import { StatsGrid } from './StatsGrid';
 import { AppointmentsChart } from './AppointmentsChart';
 import { ServicesChart } from './ServicesChart';
 import { RecentAppointments } from './RecentAppointments';
+import { AppointmentsPage } from './appointments';
+import { AppointmentsProvider } from '../../contexts/AppointmentsContext';
 import { cn } from '../../lib/utils';
 
 interface DashboardPageProps {
@@ -20,7 +22,7 @@ export function DashboardPage({ onLogout }: DashboardPageProps) {
       case 'dashboard':
         return <DashboardContent />;
       case 'agendamentos':
-        return <PlaceholderPage title="Agendamentos" description="Gerencie todos os agendamentos da barbearia" />;
+        return <AppointmentsPage />;
       case 'servicos':
         return <PlaceholderPage title="Serviços" description="Configure os serviços oferecidos" />;
       case 'clientes':
@@ -33,24 +35,26 @@ export function DashboardPage({ onLogout }: DashboardPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950">
-      <AppSidebar 
-        onLogout={onLogout}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
-      
-      {/* Conteúdo Principal */}
-      <main className={cn(
-        "transition-all duration-300 min-h-screen",
-        "lg:ml-[280px]", // Sidebar expandida
-        "pt-20 lg:pt-0" // Espaço para botão mobile
-      )}>
-        <div className="p-6 md:p-8 lg:p-10">
-          {renderContent()}
-        </div>
-      </main>
-    </div>
+    <AppointmentsProvider>
+      <div className="min-h-screen bg-dark-950">
+        <AppSidebar 
+          onLogout={onLogout}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+        
+        {/* Conteúdo Principal */}
+        <main className={cn(
+          "transition-all duration-300 min-h-screen",
+          "lg:ml-[280px]", // Sidebar expandida
+          "pt-20 lg:pt-0" // Espaço para botão mobile
+        )}>
+          <div className="p-6 md:p-8 lg:p-10">
+            {renderContent()}
+          </div>
+        </main>
+      </div>
+    </AppointmentsProvider>
   );
 }
 
